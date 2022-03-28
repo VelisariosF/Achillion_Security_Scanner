@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), qrCode, Toast.LENGTH_LONG).show();
-                Log.i(MainActivity.class.getSimpleName(), "QR COODE Found: " + qrCode);
+                Log.i(MainActivity.class.getSimpleName(), "Βρέθηκε περιοχή για έλεγχο: " + qrCode);
 
             }
         });

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Achillion_Security_Scanner</string>
+    <string name="app_name">Achillion Security Patrol Scanner</string>
     <string name="result_text">Result Text</string>
     <string name="go_back">Go Back!</string>
 </resources>
