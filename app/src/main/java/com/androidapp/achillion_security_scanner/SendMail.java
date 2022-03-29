@@ -53,7 +53,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         //Dismissing the progress dialog
         progressDialog.dismiss();
         //Showing a success message
-        Toast.makeText(context,"Ο έλεγχος της περιοχής ολοκληρώθηκε!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(context,"Region scan has completed successfully!",Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Achillion Security Patrol Scanner</string>
     <string name="result_text">Result Text</string>
-    <string name="go_back">Go Back!</string>
+    <string name="scan_again">Scan Again!</string>
+    <string name="scanning_qr_code">Scanning QR Code</string>
+    <string name="region_scanned">Region Scanned!</string>
 </resources>

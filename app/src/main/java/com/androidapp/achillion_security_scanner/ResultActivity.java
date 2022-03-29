@@ -27,7 +27,8 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(ResultActivity.this, MainActivity.class);
 //Pass data to the SayHelloNewScreen Activity through the Intent
-                Config.timesSent = 0;
+                Config.first_email_timesSent = 0;
+                Config.second_email_times_sent = 0;
 //Ask Android to start the new Activity
                 startActivity(i);
 
@@ -42,22 +43,44 @@ public class ResultActivity extends AppCompatActivity {
             CharSequence resultText = extras.getCharSequence("savedResultText");
 
 //Restore the dynamic state of the UI
+            String[] resultTexts = resultText.toString().split(":");
+            String region_address = null;
+            String customer_email_address = null;
+            String qr_code_access_code = null;
+           if(resultTexts.length == 3){
+               region_address = resultTexts[0];
+               customer_email_address =resultTexts[1];
+               qr_code_access_code = resultTexts[2];
+               objTextViewName.setText(region_address);
+               if(Config.access_code.equals(qr_code_access_code)){
 
-            objTextViewName.setText(resultText);
-            if(Config.timesSent < 1){
+                   if(Config.first_email_timesSent < 1 && Config.second_email_times_sent < 1){
 
-                sendEmail("O έλεγχος της περιοχής " + resultText + " ολοκληρώθηκε!", resultText.toString());
-                Config.timesSent ++;
-            }
+                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!", region_address, Config.RECEIVER_COMPANY_EMAIL_ADDRESS);
+                       Config.first_email_timesSent ++;
+                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!", region_address, customer_email_address);
+                       Config.second_email_times_sent++;
+                   }
+               }else{
+                   objTextViewName.setText("Invalid access code.");
+                   Toast.makeText(this, "Invalid access code." , Toast.LENGTH_SHORT).show();
+               }
+           } else{
+               objTextViewName.setText("Not company's qr code.");
+               Toast.makeText(this, "Not company's qr code." , Toast.LENGTH_SHORT).show();
+           }
+
+
+
         }else{
             objTextViewName.setText("Nothing found");
         }
     }
 
 
-    private void sendEmail(String msg, String subj) {
+    private void sendEmail(String msg, String subj, String email_Address) {
         //Getting content for email
-        String email = "info@achillionsecurity.gr";
+        String email = email_Address;
         String subject = subj;
         String message = msg;
 
