@@ -56,9 +56,9 @@ public class ResultActivity extends AppCompatActivity {
 
                    if(Config.first_email_timesSent < 1 && Config.second_email_times_sent < 1){
 
-                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!", region_address, Config.RECEIVER_COMPANY_EMAIL_ADDRESS);
+                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!  Περιοχή ελέγχου:" + Config.user_address + ", " + Config.lat + ", " + Config.lon, region_address, Config.RECEIVER_COMPANY_EMAIL_ADDRESS);
                        Config.first_email_timesSent ++;
-                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!", region_address, customer_email_address);
+                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!  Περιοχή ελέγχου:" + Config.user_address + ", " + Config.lat + ", " + Config.lon, region_address, customer_email_address);
                        Config.second_email_times_sent++;
                    }
                }else{
