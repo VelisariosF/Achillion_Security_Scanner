@@ -23,9 +23,11 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.audiofx.Equalizer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
@@ -56,39 +58,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       /* try {
-            ConnectivityManager connectivity = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (connectivity != null) {
-                NetworkInfo[] info = connectivity.getAllNetworkInfo();
-                if (info != null)
-                    for (int i = 0; i < info.length; i++)
-                        if (info[i].getState() == NetworkInfo.State.CONNECTED) {*/
-                            previewView = findViewById(R.id.activity_main_previewView);
-
-                            qrCodeFoundButton = findViewById(R.id.activity_main_qrCodeFoundButton);
-                            qrCodeFoundButton.setVisibility(View.INVISIBLE);
-                            qrCodeFoundButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Toast.makeText(getApplicationContext(), qrCode, Toast.LENGTH_LONG).show();
-                                    Log.i(MainActivity.class.getSimpleName(), "Scanning QR Code: " + qrCode);
-
-                                }
-                            });
 
 
-                            cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-                            requestCamera();
+        if(isConnected()){
+            previewView = findViewById(R.id.activity_main_previewView);
 
-                            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                            requestLocation();
-                       /* }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            qrCodeFoundButton = findViewById(R.id.activity_main_qrCodeFoundButton);
+            qrCodeFoundButton.setVisibility(View.INVISIBLE);
+            qrCodeFoundButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getApplicationContext(), qrCode, Toast.LENGTH_LONG).show();
+                    Log.i(MainActivity.class.getSimpleName(), "Scanning QR Code: " + qrCode);
+
+                }
+            });
+
+
+            cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+            requestCamera();
+
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            requestLocation();
+        }else{
+            showDialog();
         }
-        //exit the app
-        //finish();*/
+
+
 
     }
 
@@ -206,20 +202,58 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage("Enable your location!")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         dialog.cancel();
+                        finish();
                     }
                 });
         final AlertDialog alert = builder.create();
         alert.show();
     }
 
+
+
+    private boolean isConnected(){
+         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+         NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+         NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+         if((wifiConn !=null && wifiConn.isConnected()) || (mobileConn !=null && mobileConn.isConnected())){
+           return true;
+        }else{
+             return false;
+         }
+     }
+
+
+     private void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please connect to the internet!")
+                .setCancelable(false)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        finish();
+                    }
+                });
+         final AlertDialog alert = builder.create();
+         alert.show();
+     }
 }

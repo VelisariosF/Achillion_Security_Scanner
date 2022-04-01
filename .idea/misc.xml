@@ -7,11 +7,12 @@
         <entry key="app/src/main/res/drawable/achillion_logo_foreground.xml" value="0.172" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.159" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.11979166666666667" />
-        <entry key="app/src/main/res/layout/launcher_activity.xml" value="0.19375" />
+        <entry key="app/src/main/res/layout/launcher_activity.xml" value="0.19" />
         <entry key="app/src/main/res/layout/result_activity.xml" value="0.25" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/achillion_logo.xml" value="0.172" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/achillion_logo_round.xml" value="0.172" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/achillion_security_logo.xml" value="0.1305" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/achillion_security_logo_round.xml" value="0.157" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.172" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.172" />
       </map>
