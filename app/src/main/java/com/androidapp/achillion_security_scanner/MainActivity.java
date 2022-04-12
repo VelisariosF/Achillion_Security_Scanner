@@ -22,6 +22,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.audiofx.Equalizer;
 import android.net.ConnectivityManager;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,6 +47,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
+//import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 0;
 
@@ -54,11 +59,13 @@ public class MainActivity extends AppCompatActivity {
     private Button qrCodeFoundButton;
     private String qrCode;
 
+    //private ZXingScannerView zXingScannerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+      //  zXingScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
+      //  setContentView(zXingScannerView);
 
         if(isConnected()){
             previewView = findViewById(R.id.activity_main_previewView);
@@ -104,11 +111,14 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             //getLocation();
             final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            //fusedLocationProviderClient.requestLocationUpdates(manage)
+
 
             if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 buildAlertMessageNoGps();
 
             }else {
+
                 fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -202,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Enable your location!")
-                .setCancelable(false)
+        builder.setMessage("Location is required. Please enable your location and restart the application!");
+                /*.setCancelable(false)
                 .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
@@ -214,9 +224,25 @@ public class MainActivity extends AppCompatActivity {
                         dialog.cancel();
                         finish();
                     }
-                });
+                });*/
         final AlertDialog alert = builder.create();
         alert.show();
+        Thread terminate = new Thread() {
+            public void run() {
+                try {
+                    // Thread will sleep for 5 seconds
+                    sleep(10000);
+
+                    // After 5 seconds redirect to another intent
+
+                    //Remove activity
+                    finish();
+                } catch (Exception e) {
+                }
+            }
+        };
+        // start thread
+        terminate.start();
     }
 
 
@@ -236,8 +262,9 @@ public class MainActivity extends AppCompatActivity {
 
      private void showDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Please connect to the internet!")
-                .setCancelable(false)
+        builder.setMessage("Network connection and location are required.\n Please enable your location," +
+                "connect to the internet and restart the application!");
+              /*  .setCancelable(false)
                 .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -252,8 +279,24 @@ public class MainActivity extends AppCompatActivity {
                         dialogInterface.cancel();
                         finish();
                     }
-                });
+                });*/
          final AlertDialog alert = builder.create();
          alert.show();
+         Thread terminate = new Thread() {
+             public void run() {
+                 try {
+                     // Thread will sleep for 5 seconds
+                     sleep(10000);
+
+                     // After 5 seconds redirect to another intent
+
+                     //Remove activity
+                     finish();
+                 } catch (Exception e) {
+                 }
+             }
+         };
+         // start thread
+         terminate.start();
      }
 }
