@@ -12,12 +12,14 @@ import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.loader.app.LoaderManager;
 
 import android.Manifest;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,6 +30,7 @@ import android.media.audiofx.Equalizer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Size;
@@ -37,6 +40,9 @@ import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Button qrCodeFoundButton;
     private String qrCode;
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
+    private boolean requestingLocationUpdates = false;
+
 
     //private ZXingScannerView zXingScannerView;
     @Override
@@ -66,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
       //  zXingScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
       //  setContentView(zXingScannerView);
+
 
         if(isConnected()){
             previewView = findViewById(R.id.activity_main_previewView);
@@ -85,6 +96,12 @@ public class MainActivity extends AppCompatActivity {
             cameraProviderFuture = ProcessCameraProvider.getInstance(this);
             requestCamera();
 
+            IntentFilter intentFilter = new IntentFilter("com.androidapp.achillion_security_scanner");
+            GpsLocationReceiver gpsLocationReceiver = new GpsLocationReceiver();
+            registerReceiver(gpsLocationReceiver, intentFilter);
+            senDataToReceiver();
+
+
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
             requestLocation();
         }else{
@@ -94,6 +111,23 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        requestingLocationUpdates = false;
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        requestingLocationUpdates = true;
+        requestLocation();
+
+    }
+
 
     private void requestCamera() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -112,13 +146,31 @@ public class MainActivity extends AppCompatActivity {
             //getLocation();
             final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             //fusedLocationProviderClient.requestLocationUpdates(manage)
+            boolean managerEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
 
-            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!managerEnabled || !GpsLocationReceiver.gpsOn) {
                 buildAlertMessageNoGps();
 
             }else {
 
+                requestingLocationUpdates = true;
+                locationRequest = LocationRequest.create();
+                locationRequest.setInterval(10000);
+                locationRequest.setFastestInterval(5000);
+                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                locationCallback = new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        if (locationResult == null) {
+                            return;
+                        }
+                        for (Location location : locationResult.getLocations()) {
+                            // Update UI with location data
+                            // ...
+                        }
+                    }
+                };
                 fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -137,6 +189,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+                if(requestingLocationUpdates){
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                            locationCallback,
+                            Looper.getMainLooper());
+                }
+
+
             }
         } else {
 
@@ -299,4 +358,19 @@ public class MainActivity extends AppCompatActivity {
          // start thread
          terminate.start();
      }
+
+
+     private void senDataToReceiver(){
+         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+         //fusedLocationProviderClient.requestLocationUpdates(manage)
+         boolean managerEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+         Intent intent = new Intent();
+         intent.setAction("com.androidapp.achillion_security_scanner");
+         intent.putExtra("data", managerEnabled);
+         sendBroadcast(intent);
+     }
+
+
+
+
 }
