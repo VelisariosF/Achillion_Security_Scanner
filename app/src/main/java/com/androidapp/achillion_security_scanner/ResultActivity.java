@@ -41,9 +41,9 @@ public class ResultActivity extends AppCompatActivity {
         if (extras != null) {
             //Retrieve data from the Bundle (other methods include getInt(), getBoolean() etc)
             CharSequence resultText = extras.getCharSequence("savedResultText");
-
+            String decryptedResultText = QrCodeDecryptor.getDecryptedData(resultText.toString());
             //Restore the dynamic state of the UI
-            String[] resultTexts = resultText.toString().split(":");
+            String[] resultTexts = decryptedResultText.split(":");
             String region_address = null;
             String customer_email_address = null;
             String qr_code_access_code = null;

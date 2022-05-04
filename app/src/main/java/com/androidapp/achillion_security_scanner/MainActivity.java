@@ -96,10 +96,7 @@ public class MainActivity extends AppCompatActivity {
             cameraProviderFuture = ProcessCameraProvider.getInstance(this);
             requestCamera();
 
-            IntentFilter intentFilter = new IntentFilter("com.androidapp.achillion_security_scanner");
-            GpsLocationReceiver gpsLocationReceiver = new GpsLocationReceiver();
-            registerReceiver(gpsLocationReceiver, intentFilter);
-            senDataToReceiver();
+
 
 
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
+   /* @Override
     protected void onStop() {
         super.onStop();
         requestingLocationUpdates = false;
@@ -126,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         requestingLocationUpdates = true;
         requestLocation();
 
-    }
+    }*/
 
 
     private void requestCamera() {
@@ -146,15 +143,20 @@ public class MainActivity extends AppCompatActivity {
             //getLocation();
             final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             //fusedLocationProviderClient.requestLocationUpdates(manage)
+           // GpsLocationReceiver.gpsOn= manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean managerEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+          //  IntentFilter intentFilter = new IntentFilter("com.androidapp.achillion_security_scanner");
+          //  GpsLocationReceiver gpsLocationReceiver = new GpsLocationReceiver();
+         //   registerReceiver(gpsLocationReceiver, intentFilter);
+          //  senDataToReceiver();
 
 
-            if (!managerEnabled || !GpsLocationReceiver.gpsOn) {
+            if (!managerEnabled) {
                 buildAlertMessageNoGps();
 
             }else {
-
-                requestingLocationUpdates = true;
+                //GpsLocationReceiver.gpsOn = true;
+             /*   requestingLocationUpdates = true;
                 locationRequest = LocationRequest.create();
                 locationRequest.setInterval(10000);
                 locationRequest.setFastestInterval(5000);
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                             // ...
                         }
                     }
-                };
+                };*/
                 fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -198,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         } else {
-
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
 
         }
@@ -271,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Location is required. Please enable your location and restart the application!");
+        builder.setMessage("Please enable your location and restart the application!");
                 /*.setCancelable(false)
                 .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
@@ -295,7 +296,8 @@ public class MainActivity extends AppCompatActivity {
                     // After 5 seconds redirect to another intent
 
                     //Remove activity
-                    finish();
+                  finish();
+
                 } catch (Exception e) {
                 }
             }
@@ -321,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
      private void showDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Network connection and location are required.\n Please enable your location," +
+        builder.setMessage("Please enable your location," +
                 "connect to the internet and restart the application!");
               /*  .setCancelable(false)
                 .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
@@ -351,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
 
                      //Remove activity
                      finish();
+
                  } catch (Exception e) {
                  }
              }
