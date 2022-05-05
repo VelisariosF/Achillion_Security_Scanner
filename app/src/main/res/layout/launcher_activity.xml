@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LauncherActivity">
+    tools:context=".LauncherActivity"
+    android:background="@color/brown_500">
 
    <ImageView
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_height="400dp"
        android:scaleType="centerCrop"
        android:src="@mipmap/achillion_security_launcher_foreground"
-       tools:layout_editor_absoluteX="-25dp"
-       tools:layout_editor_absoluteY="0dp" />
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       tools:layout_editor_absoluteX="-16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

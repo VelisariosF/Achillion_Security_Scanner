@@ -54,13 +54,13 @@ public class ResultActivity extends AppCompatActivity {
                objTextViewName.setText(region_address + "\n" + "lat, lon: " + Config.lat +"," +Config.lon) ;
                if(Config.access_code.equals(qr_code_access_code)){
 
-                 //  if(Config.first_email_timesSent < 1 && Config.second_email_times_sent < 1){
+                   if(Config.first_email_timesSent < 1 && Config.second_email_times_sent < 1){
 
-                      // sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!  Περιοχή ελέγχου:" + Config.user_address + ", " + Config.lat + ", " + Config.lon, region_address, Config.RECEIVER_COMPANY_EMAIL_ADDRESS);
-                  //     Config.first_email_timesSent ++;
-                      // sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!  Περιοχή ελέγχου:" + Config.user_address + ", " + Config.lat + ", " + Config.lon, region_address, customer_email_address);
-                  //     Config.second_email_times_sent++;
-                  // }
+                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!  Περιοχή ελέγχου:" + Config.user_address + ", " + Config.lat + ", " + Config.lon, region_address, Config.RECEIVER_COMPANY_EMAIL_ADDRESS);
+                       Config.first_email_timesSent ++;
+                       sendEmail("O έλεγχος της περιοχής " + region_address + " ολοκληρώθηκε!  Περιοχή ελέγχου:" + Config.user_address + ", " + Config.lat + ", " + Config.lon, region_address, customer_email_address);
+                       Config.second_email_times_sent++;
+                   }
                }else{
                    objTextViewName.setText("Invalid access code.");
                    Toast.makeText(this, "Invalid access code." , Toast.LENGTH_SHORT).show();
